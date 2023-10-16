@@ -157,6 +157,7 @@ function M.try_lint(names, opts)
 
   for _, linter_name in pairs(names) do
     local linter = lookup_linter(linter_name)
+    linter = require('lint.util').inject_cmd_exe(linter)
     local ok, handle_or_error = pcall(M.lint, linter, opts)
     if ok then
       running_procs[linter.name] = handle_or_error

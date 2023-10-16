@@ -37,4 +37,4 @@ local opts = {
   end
 }
 
-return require("lint.util").inject_cmd_exe(opts)
+return opts

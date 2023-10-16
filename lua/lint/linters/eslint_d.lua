@@ -4,7 +4,7 @@ local severities = {
   vim.diagnostic.severity.WARN,
 }
 
-return require('lint.util').inject_cmd_exe({
+return {
   cmd = function()
     local local_eslintd = vim.fn.fnamemodify('./node_modules/.bin/eslint_d', ':p')
     local stat = vim.loop.fs_stat(local_eslintd)
@@ -44,4 +44,4 @@ return require('lint.util').inject_cmd_exe({
 
     return diagnostics
   end
-})
+}
