@@ -7,21 +7,31 @@ built-in Language Server Protocol support.
 
 With [ale][1] we already got an asynchronous linter, why write yet another one?
 
-Because [ale][1] reports diagnostics with its own home grown solution and even
-includes its own language server client.
+Because [ale][1] also includes its own language server client.
 
-`nvim-lint` instead uses the `vim.diagnostic` module to present diagnostics in
-the same way the language client built into neovim does.
-`nvim-lint` is meant to fill the gaps for languages where either no language
-server exists, or where standalone linters provide better results than the
-available language server do.
+`nvim-lint` instead has a more narrow scope: It spawns linters, parses their
+output, and reports the results via the `vim.diagnostic` module.
+
+`nvim-lint` complements the built-in language server client for languages where
+there are no language servers, or where standalone linters provide better
+results.
 
 ## Installation
 
 - Requires Neovim >= 0.6.0
-- `nvim-lint` is a plugin. Install it like any other Neovim plugin.
-  - If using [vim-plug][3]: `Plug 'mfussenegger/nvim-lint'`
-  - If using [packer.nvim][4]: `use 'mfussenegger/nvim-lint'`
+- `nvim-lint` is a regular plugin and can be installed via the `:h packages`
+  mechanism or via a plugin manager.
+
+For example:
+
+```bash
+git clone \
+    https://github.com/mfussenegger/nvim-lint.git
+    ~/.config/nvim/pack/plugins/start/nvim-lint
+```
+
+- If using [vim-plug][3]: `Plug 'mfussenegger/nvim-lint'`
+- If using [packer.nvim][4]: `use 'mfussenegger/nvim-lint'`
 
 
 ## Usage
@@ -70,10 +80,12 @@ Other dedicated linters that are built-in are:
 | ---------------------------------- | ---------------------  |
 | Set via `makeprg`                  | `compiler`             |
 | [actionlint][actionlint]           | `actionlint`           |
+| [alex][alex]                       | `alex`                 |
 | [ansible-lint][ansible-lint]       | `ansible_lint`         |
 | [bandit][bandit]                   | `bandit`               |
 | [bean-check][bean-check]           | `bean_check`           |
 | [biomejs][biomejs]                 | `biomejs`              |
+| [blocklint][blocklint]             | `blocklint`            |
 | [buf_lint][buf_lint]               | `buf_lint`             |
 | [buildifier][buildifier]           | `buildifier`           |
 | [cfn-lint][cfn-lint]               | `cfn_lint`             |
@@ -86,6 +98,7 @@ Other dedicated linters that are built-in are:
 | [clj-kondo][24]                    | `clj-kondo`            |
 | [cmakelint][cmakelint]             | `cmakelint`            |
 | [codespell][18]                    | `codespell`            |
+| [commitlint][commitlint]           | `commitlint`           |
 | [cppcheck][22]                     | `cppcheck`             |
 | [cpplint][cpplint]                 | `cpplint`              |
 | [credo][credo]                     | `credo`                |
@@ -93,6 +106,7 @@ Other dedicated linters that are built-in are:
 | [curlylint][curlylint]             | `curlylint`            |
 | [deno][deno]                       | `deno`                 |
 | [djlint][djlint]                   | `djlint`               |
+| [dotenv-linter][dotenv-linter]     | `dotenv_linter`        |
 | [editorconfig-checker][ec]         | `editorconfig-checker` |
 | [erb-lint][erb-lint]               | `erb_lint`             |
 | [ESLint][25]                       | `eslint`               |
@@ -101,6 +115,7 @@ Other dedicated linters that are built-in are:
 | [Flake8][13]                       | `flake8`               |
 | [flawfinder][35]                   | `flawfinder`           |
 | [gdlint (gdtoolkit)][gdlint]       | `gdlint`               |
+| [gitlint][gitlint]                 | `gitlint`              |
 | [Golangci-lint][16]                | `golangcilint`         |
 | [glslc][glslc]                     | `glslc`                |
 | [DirectX Shader Compiler][dxc]     | `dxc`                  |
@@ -129,8 +144,10 @@ Other dedicated linters that are built-in are:
 | [phpstan][phpstan]                 | `phpstan`              |
 | [proselint][proselint]             | `proselint`            |
 | [psalm][psalm]                     | `psalm`                |
+| [puppet-lint][puppet-lint]         | `puppet-lint`          |
 | [pycodestyle][pcs-docs]            | `pycodestyle`          |
 | [pydocstyle][pydocstyle]           | `pydocstyle`           |
+| [pyproject-flake8][pflake8]        | `pflake8`              |
 | [Pylint][15]                       | `pylint`               |
 | [Revive][14]                       | `revive`               |
 | [rflint][rflint]                   | `rflint`               |
@@ -143,6 +160,7 @@ Other dedicated linters that are built-in are:
 | [Ruff][ruff]                       | `ruff`                 |
 | [Selene][31]                       | `selene`               |
 | [ShellCheck][10]                   | `shellcheck`           |
+| [snyk][snyk]                       | `snyk_iac`             |
 | [sqlfluff][sqlfluff]               | `sqlfluff`             |
 | [standardjs][standardjs]           | `standardjs`           |
 | [StandardRB][27]                   | `standardrb`           |
@@ -154,6 +172,8 @@ Other dedicated linters that are built-in are:
 | [Verilator][verilator]             | `verilator`            |
 | [vint][21]                         | `vint`                 |
 | [vulture][vulture]                 | `vulture`              |
+| [woke][woke]                       | `woke`                 |
+| [write-good][write-good]           | `write_good`           |
 | [yamllint][yamllint]               | `yamllint`             |
 | [tfsec][tfsec]                     | `tfsec`                |
 | [trivy][trivy]                     | `trivy`                |
@@ -401,3 +421,13 @@ busted tests/
 [deno]: https://github.com/denoland/deno
 [standardjs]: https://standardjs.com/
 [biomejs]: https://github.com/biomejs/biome
+[commitlint]: https://commitlint.js.org
+[alex]: https://alexjs.com/
+[blocklint]: https://github.com/PrincetonUniversity/blocklint
+[woke]: https://docs.getwoke.tech/
+[write-good]: https://github.com/btford/write-good
+[dotenv-linter]: https://dotenv-linter.github.io/
+[puppet-lint]: https://github.com/puppetlabs/puppet-lint
+[snyk]: https://github.com/snyk/cli
+[gitlint]: https://github.com/jorisroovers/gitlint
+[pflake8]: https://github.com/csachs/pyproject-flake8
